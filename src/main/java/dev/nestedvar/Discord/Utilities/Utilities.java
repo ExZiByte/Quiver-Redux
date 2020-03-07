@@ -52,9 +52,9 @@ public class Utilities {
         } catch (ParseException ex) {
             logging.error(Utilities.class, ex.toString());
         } finally {
-//            settings.forEach((k, v) -> {
-//                System.out.format("Key: %s, Value: %s", k, v);
-//            });
+            settings.forEach((k, v) -> {
+                System.out.format("Key: %s, Value: %s", k, v);
+            });
             cursor.close();
         }
 
@@ -152,48 +152,48 @@ public class Utilities {
 
     public TextChannel getLogChannel(Guild guild){
         HashMap<String, String> map = settings.get(guild.getId());
-        if(guild.getTextChannelById(map.get("logChannel")) != null){
-            return  guild.getTextChannelById(map.get("logChannel"));
+        if(map.get("logChannel").equalsIgnoreCase("null")){
+            return guild.getDefaultChannel();
         }
         else {
-            return guild.getDefaultChannel();
+            return  guild.getTextChannelById(map.get("logChannel"));
         }
     }
 
-    public void setLogChannel(Guild guild, TextChannel channel){
+    public void setLogChannel(Guild guild, String channelID){
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
         Bson filter = new Document("logChannelID", getLogChannel(guild));
-        Bson newLogChannel = new Document("logChannelID", channel.getId());
+        Bson newLogChannel = new Document("logChannelID", channelID);
         Bson updateLogChannel = new Document("$set", newLogChannel);
         guilds.updateOne(filter, updateLogChannel);
         db.close();
         HashMap<String, String> map = settings.get(guild.getId());
-        map.put("logChannel", channel.getId());
+        map.put("logChannel", channelID);
         settings.put(guild.getId(), map);
     }
 
     public TextChannel getJoinLogChannel(Guild guild){
         HashMap<String, String> map = settings.get(guild.getId());
-        if(guild.getTextChannelById(map.get("joinLog")) != null){
-            return  guild.getTextChannelById(map.get("joinLog"));
+        if(map.get("joinLog").equalsIgnoreCase("null")){
+            return guild.getDefaultChannel();
         }
         else {
-            return guild.getDefaultChannel();
+            return guild.getTextChannelById(map.get("joinLog"));
         }
 
     }
 
-    public void setJoinLogChannel(Guild guild, TextChannel channel){
+    public void setJoinLogChannel(Guild guild, String channelID){
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
         Bson filter = new Document("joinLogID", getLogChannel(guild));
-        Bson newLogChannel = new Document("joinLogID", channel.getId());
+        Bson newLogChannel = new Document("joinLogID", channelID);
         Bson updateLogChannel = new Document("$set", newLogChannel);
         guilds.updateOne(filter, updateLogChannel);
         db.close();
         HashMap<String, String> map = settings.get(guild.getId());
-        map.put("joinLog", channel.getId());
+        map.put("joinLog", channelID);
         settings.put(guild.getId(), map);
     }
 

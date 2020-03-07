@@ -27,7 +27,7 @@ public class Locale {
                 for(String locale: locales){
                     File verify = new File(String.format("locale/%s.json", locale));
                     if(!verify.isFile()){
-                        InputStream stream = new URL(String.format("https://github.com/NestedVariables/Quiver-Redux/master/src/main/java/nestedvar/Discord/Locale/%s.json", locale)).openStream();
+                        InputStream stream = new URL(String.format("https://github.com/ExZiByte/Quiver-Redux/tree/master/src/main/java/dev/nestedvar/Discord/Locale/%s.json", locale)).openStream();
                         Files.copy(stream, Paths.get(String.format("locale/%s.json", locale)), StandardCopyOption.REPLACE_EXISTING);
                         logging.info(Locale.class, String.format("📂 Regenerated locale file %s", locale));
                     }
@@ -41,7 +41,7 @@ public class Locale {
                 File dir = new File("locale");
                 dir.mkdir();
                 for(String locale: locales){
-                    InputStream stream = new URL(String.format("https://github.com/NestedVariables/Quiver-Redux/master/src/main/java/nestedvar/Discord/Locale/%s.json", locale)).openStream();
+                    InputStream stream = new URL(String.format("https://github.com/ExZiByte/Quiver-Redux/tree/master/src/main/java/dev/nestedvar/Discord/Locale/%s.json", locale)).openStream();
                     Files.copy(stream, Paths.get(String.format("locale/%s.json", locale)), StandardCopyOption.REPLACE_EXISTING);
                 }
                 logging.info(Locale.class, "📂 Downloaded locale files");

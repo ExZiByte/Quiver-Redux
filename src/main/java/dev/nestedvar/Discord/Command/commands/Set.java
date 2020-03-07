@@ -2,7 +2,9 @@ package dev.nestedvar.Discord.Command.commands;
 
 import dev.nestedvar.Discord.Command.CommandContext;
 import dev.nestedvar.Discord.Command.ICommand;
+import dev.nestedvar.Discord.Utilities.Locale;
 import dev.nestedvar.Discord.Utilities.Utilities;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -19,109 +21,112 @@ public class Set implements ICommand {
         final Message msg = ctx.getMessage();
         final Member member = ctx.getMember();
         final List<String> args = ctx.getArgs();
+        final Guild guild = ctx.getGuild();
         final Utilities utils = new Utilities();
-        final TextChannel logChannel = utils.getLogChannel(ctx.getGuild());
+        final Locale locale = new Locale();
+
+        final TextChannel logChannel = utils.getLogChannel(guild);
 
         if (args.size() < 1) {
-            channel.sendMessage("You need to tell me what setting you want to configure!").queue();
+            channel.sendMessage(locale.getMessage(guild, "settingsInsufficientArguments")).queue();
             return;
         }
         if (args.size() < 2) {
             if (args.get(0).equalsIgnoreCase("prefix")) {
-                channel.sendMessage("I need to know what you would like to use as this server's prefix").queue(
+                channel.sendMessage(locale.getMessage(guild,"settingsInsufficientPrefixArguments")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
                 return;
             } else if (args.get(0).equalsIgnoreCase("locale")) {
-                channel.sendMessage("I need to know what locale you wanted to use for future messages").queue(
+                channel.sendMessage(locale.getMessage(guild, "settingsInsufficientLocaleArguments")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
                 return;
             } else if (args.get(0).equalsIgnoreCase("logchannel") || args.get(0).equalsIgnoreCase("logging") || args.get(0).equalsIgnoreCase("log")) {
-                channel.sendMessage("I need to know which channel you want to use as a logging channel").queue(
+                channel.sendMessage(locale.getMessage(guild, "settingsInsufficientLogChannelArguments")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
                 return;
             } else if (args.get(0).equalsIgnoreCase("joinlog") || args.get(0).equalsIgnoreCase("join") || args.get(0).equalsIgnoreCase("joinlogging")) {
-                channel.sendMessage("I need to know which channel you want to use as a join/leave log").queue(
+                channel.sendMessage(locale.getMessage(guild, "settingsInsufficientJoinLeaveLogArguments")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
                 return;
             } else if (args.get(0).equalsIgnoreCase("remove") || args.get(0).equalsIgnoreCase("reset")) {
-                channel.sendMessage("What setting did you want to reset/remove?").queue(
+                channel.sendMessage(locale.getMessage(guild, "settingsInsufficientResetArguments")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
             }
         }
 
         if (args.get(0).equalsIgnoreCase("prefix")) {
-            utils.setPrefix(ctx.getGuild(), args.get(1));
-            channel.sendMessageFormat("Successfully set the prefix for all future commands to `%s`", args.get(1)).queue(
+            utils.setPrefix(guild, args.get(1));
+            channel.sendMessage(locale.getMessage(guild, "settingsSetPrefixSuccess").replace("[prefix]", args.get(1))).queue(
                     (message) -> msg.delete().queueAfter(15, TimeUnit.SECONDS)
             );
-            logChannel.sendMessageFormat("%s has set the prefix to `%s`", member.getAsMention(), args.get(1)).queue();
+            logChannel.sendMessage(locale.getMessage(guild, "settingsSetPrefixSuccessLog").replace("[member]", member.getAsMention()).replace("[prefix]", args.get(1))).queue();
             return;
         }
 
         if (args.get(0).equalsIgnoreCase("locale") || args.get(0).equalsIgnoreCase("language") || args.get(0).equalsIgnoreCase("locale")) {
-            utils.setLocale(ctx.getGuild(), args.get(1));
-            channel.sendMessageFormat("Successfully set the locale to `%s`", args.get(1)).queue(
+            utils.setLocale(guild, args.get(1));
+            channel.sendMessage(locale.getMessage(guild, "settingsSetLocaleSuccess").replace("[locale]", args.get(1))).queue(
                     (message) -> msg.delete().queueAfter(15, TimeUnit.SECONDS)
 
             );
-            logChannel.sendMessageFormat("%s has set the locale to `%s`", member.getAsMention(), args.get(1)).queue();
+            logChannel.sendMessage(locale.getMessage(guild, "settingsSetLocaleSuccessLog").replace("[member]", member.getAsMention()).replace("[locale]", args.get(1))).queue();
             return;
         }
 
         if (args.get(0).equalsIgnoreCase("logchannel") || args.get(0).equalsIgnoreCase("logging") || args.get(0).equalsIgnoreCase("log")) {
-            utils.setLogChannel(ctx.getGuild(), msg.getMentionedChannels().get(0));
-            channel.sendMessageFormat("Successfully set the logging channel to %s", msg.getMentionedChannels().get(0).getAsMention()).queue(
+            utils.setLogChannel(guild, msg.getMentionedChannels().get(0).getId());
+            channel.sendMessage(locale.getMessage(guild, "settingsSetLogChannelSuccess").replace("[channel]", msg.getMentionedChannels().get(0).getAsMention())).queue(
                     (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
             );
-            logChannel.sendMessageFormat("%s has set the log channel to %s", member.getAsMention(), msg.getMentionedChannels().get(0).getAsMention()).queue();
+            logChannel.sendMessage(locale.getMessage(guild, "settingsSetLogChannelSuccessLog").replace("[member]", member.getAsMention()).replace("[channel]",msg.getMentionedChannels().get(0).getAsMention())).queue();
             return;
         }
 
         if (args.get(0).equalsIgnoreCase("joinlog") || args.get(0).equalsIgnoreCase("join") || args.get(0).equalsIgnoreCase("joinlogging")) {
-            utils.setJoinLogChannel(ctx.getGuild(), msg.getMentionedChannels().get(0));
-            channel.sendMessageFormat("Successfully set the join/leave log to %s", msg.getMentionedChannels().get(0)).queue(
+            utils.setJoinLogChannel(guild, msg.getMentionedChannels().get(0).getId());
+            channel.sendMessage(locale.getMessage(guild, "settingsSetJoinLeaveLogSuccess").replace("[channel]" ,msg.getMentionedChannels().get(0).getAsMention())).queue(
                     (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
             );
-            logChannel.sendMessageFormat("%s has set the join/leave log to %s", member.getAsMention(), msg.getMentionedChannels().get(0).getAsMention()).queue();
+            logChannel.sendMessage(locale.getMessage(guild, "settingsSetJoinLeaveLogSuccessLog").replace("[member]", member.getAsMention()).replace("[channel]", msg.getMentionedChannels().get(0).getAsMention())).queue();
             return;
         }
 
         if (args.get(0).equalsIgnoreCase("remove") || args.get(0).equalsIgnoreCase("reset")) {
             if (args.get(1).equalsIgnoreCase("prefix")) {
-                utils.setPrefix(ctx.getGuild(), "Q!");
-                channel.sendMessage("Successfully reset the prefix to `Q!`").queue(
+                utils.setPrefix(guild, "Q!");
+                channel.sendMessage(locale.getMessage(guild, "settingsSetDefaultPrefix")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
-                logChannel.sendMessageFormat("%s has reset the prefix to the default prefix of `Q!`").queue();
+                logChannel.sendMessage(locale.getMessage(guild, "settingsSetDefaultPrefixLog").replace("[member]", member.getAsMention())).queue();
                 return;
             }
             if (args.get(1).equalsIgnoreCase("locale") || args.get(1).equalsIgnoreCase("language") || args.get(1).equalsIgnoreCase("locale")) {
-                utils.setLocale(ctx.getGuild(), utils.getDefaultLocale(ctx.getGuild()));
-                channel.sendMessageFormat("Successfully reset the language setting to the default for this guild based on this guild's location `%s`", utils.getDefaultLocale(ctx.getGuild())).queue(
+                utils.setLocale(guild, utils.getDefaultLocale(guild));
+                channel.sendMessage(locale.getMessage(guild, "settingsSetDefaultLocale").replace("[locale]", utils.getDefaultLocale(guild))).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
-                logChannel.sendMessageFormat("%s has reset the language setting to the default for this guild based on this guild's location `%s`", member.getAsMention(), utils.getDefaultLocale(ctx.getGuild())).queue();
+                logChannel.sendMessage(locale.getMessage(guild, "settingsSetDefaultLocaleLog").replace("[member]",  member.getAsMention()).replace("[locale]", utils.getDefaultLocale(guild))).queue();
                 return;
             }
             if (args.get(1).equalsIgnoreCase("logchannel") || args.get(1).equalsIgnoreCase("logging") || args.get(1).equalsIgnoreCase("log")) {
-                utils.setLogChannel(ctx.getGuild(), null);
-                channel.sendMessage("Successfully removed the log channel").queue(
+                utils.setLogChannel(guild, null);
+                channel.sendMessage(locale.getMessage(guild, "settingsRemoveLogChannelSuccess")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
-                logChannel.sendMessageFormat("%s has removed the log channel", member.getAsMention()).queue();
+                logChannel.sendMessage(locale.getMessage(guild, "settingsRemoveLogChannelSuccessLog").replace("[member]", member.getAsMention())).queue();
                 return;
             }
             if(args.get(1).equalsIgnoreCase("joinlog") || args.get(1).equalsIgnoreCase("join") || args.get(1).equalsIgnoreCase("joinlogging")){
-                utils.setJoinLogChannel(ctx.getGuild(), null);
-                channel.sendMessage("Successfully removed the join/leave log channel").queue(
+                utils.setJoinLogChannel(guild, null);
+                channel.sendMessage(locale.getMessage(guild, "settingsRemoveJoinLeaveLogSuccess")).queue(
                         (message) -> message.delete().queueAfter(15, TimeUnit.SECONDS)
                 );
-                logChannel.sendMessageFormat("%s has removed the join/leave log channel", member.getAsMention()).queue();
+                logChannel.sendMessage(locale.getMessage(guild, "settingsRemoveJoinLeaveLogSuccessLog").replace("[member]", member.getAsMention())).queue();
                 return;
             }
         }

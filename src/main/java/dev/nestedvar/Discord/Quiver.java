@@ -3,6 +3,7 @@ package dev.nestedvar.Discord;
 import dev.nestedvar.Discord.Listeners.CommandHandler;
 import dev.nestedvar.Discord.Listeners.Ready;
 import dev.nestedvar.Discord.Utilities.ConstantsConfig;
+import dev.nestedvar.Discord.Utilities.Locale;
 import dev.nestedvar.Discord.Utilities.Utilities;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import javax.security.auth.login.LoginException;
 
 public class Quiver {
     static final Utilities utils = new Utilities();
+    static final Locale locale = new Locale();
     private final Logger LOGGER = LoggerFactory.getLogger(Quiver.class);
     private Quiver() throws LoginException {
         DefaultShardManagerBuilder quiver = new DefaultShardManagerBuilder().setToken(ConstantsConfig.get("token"));
@@ -25,8 +27,9 @@ public class Quiver {
     }
 
     public static void main(String[] args) throws LoginException {
-        new Quiver();
         utils.load();
+        locale.load();
+        new Quiver();
     }
 
 }
