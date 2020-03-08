@@ -53,7 +53,7 @@ public class Utilities {
             logging.error(Utilities.class, ex.toString());
         } finally {
             settings.forEach((k, v) -> {
-                System.out.format("Key: %s, Value: %s", k, v);
+                logging.info(Utilities.class, String.format("Key: %s, Value: %s", k, v));
             });
             cursor.close();
         }
@@ -163,7 +163,7 @@ public class Utilities {
     public void setLogChannel(Guild guild, String channelID){
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        Bson filter = new Document("logChannelID", getLogChannel(guild));
+        Bson filter = new Document("logChannelID", getLogChannel(guild).getId());
         Bson newLogChannel = new Document("logChannelID", channelID);
         Bson updateLogChannel = new Document("$set", newLogChannel);
         guilds.updateOne(filter, updateLogChannel);
@@ -187,7 +187,7 @@ public class Utilities {
     public void setJoinLogChannel(Guild guild, String channelID){
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        Bson filter = new Document("joinLogID", getLogChannel(guild));
+        Bson filter = new Document("joinLogID", getLogChannel(guild).getId());
         Bson newLogChannel = new Document("joinLogID", channelID);
         Bson updateLogChannel = new Document("$set", newLogChannel);
         guilds.updateOne(filter, updateLogChannel);
