@@ -3,6 +3,7 @@ package dev.nestedvar.Discord.Command.commands;
 import dev.nestedvar.Discord.Command.CommandContext;
 import dev.nestedvar.Discord.Command.ICommand;
 import dev.nestedvar.Discord.Utilities.Locale;
+import dev.nestedvar.Discord.Utilities.Logging;
 import dev.nestedvar.Discord.Utilities.Utilities;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -24,6 +25,11 @@ public class Set implements ICommand {
         final Guild guild = ctx.getGuild();
         final Utilities utils = new Utilities();
         final Locale locale = new Locale();
+        final Logging logging = new Logging();
+
+
+
+
 
         final TextChannel logChannel = utils.getLogChannel(guild);
 
@@ -130,8 +136,6 @@ public class Set implements ICommand {
                 return;
             }
         }
-
-
     }
 
     @Override
