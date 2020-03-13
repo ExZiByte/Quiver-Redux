@@ -3,10 +3,13 @@ package dev.nestedvar.Discord;
 import dev.nestedvar.Discord.Listeners.CommandHandler;
 import dev.nestedvar.Discord.Listeners.Ready;
 import dev.nestedvar.Discord.Utilities.*;
+import dev.nestedvar.Discord.Websockets.WebsocketServer;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class Quiver {
     static final Utilities utils = new Utilities();
@@ -24,10 +27,11 @@ public class Quiver {
         logging.info(Quiver.class, "Loading shard 0");
     }
 
-    public static void main(String[] args) throws LoginException, RateLimitedException, InterruptedException {
+    public static void main(String[] args) throws LoginException, RateLimitedException, InterruptedException, IOException, NoSuchAlgorithmException {
         utils.load();
         locale.load();
         new Quiver();
+        //new WebsocketServer();
     }
 
 }

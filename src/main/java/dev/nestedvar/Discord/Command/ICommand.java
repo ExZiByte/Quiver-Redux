@@ -9,7 +9,7 @@ public interface ICommand {
 
     String getName();
 
-    String getHelp();
+    String getHelp(CommandContext ctx);
 
     default List<String> getAliases() {
         return Arrays.asList();

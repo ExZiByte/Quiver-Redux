@@ -52,27 +52,37 @@ public class Locale {
         }
     }
 
-    public String getMessage(Guild guild, String message) {
+    public String getLocales(){
+        StringBuilder builder = new StringBuilder();
+        for (String locale : locales) {
+            builder.append(locale.toString() + "\n");
+        }
+        return builder.toString();
+    }
+
+    public String getMessage(Guild guild, String category, String message) {
         JSONParser parser = new JSONParser();
         Utilities utils = new Utilities();
         try {
             File localeFile = Paths.get(String.format("locale/%s.json", utils.getLocale(guild))).toFile();
             InputStream stream = new FileInputStream(localeFile);
-            Object object = parser.parse(IOUtils.toString(stream, "UTF-8"));
-            JSONObject json = (JSONObject) object;
+            JSONObject object = (JSONObject) parser.parse(IOUtils.toString(stream, "UTF-8"));
+            JSONObject jsonCategory = (JSONObject) object.get(category);
+            String messageToReturn = (String) jsonCategory.get(message);
             stream.close();
-            return (String) json.get(message);
+            return messageToReturn;
         } catch (Exception e) {
 
             try {
                 InputStream stream = Quiver.class.getResourceAsStream(String.format("locale/%s.json", utils.getLocale(guild)));
-                Object object = parser.parse(IOUtils.toString(stream, "UTF-8"));
-                JSONObject json = (JSONObject) object;
+                JSONObject object = (JSONObject) parser.parse(IOUtils.toString(stream, "UTF-8"));
+                JSONObject jsonCategory = (JSONObject) object.get(category);
+                String messageToReturn = (String) jsonCategory.get(message);
                 stream.close();
 
                 logging.warn(Locale.class, String.format("Locale files for '%s' are missing. Using backup locales", utils.getLocale(guild)));
 
-                return (String) json.get(message);
+                return messageToReturn;
             } catch (Exception ex) {
                 logging.error(Locale.class, e.toString());
                 e.printStackTrace();

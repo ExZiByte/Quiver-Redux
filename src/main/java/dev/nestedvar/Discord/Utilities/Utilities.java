@@ -4,6 +4,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -46,6 +47,9 @@ public class Utilities {
                 data.put("prefix", obj.get("prefix").toString());
                 data.put("logChannel", obj.get("logChannelID").toString());
                 data.put("joinLog", obj.get("joinLogID").toString());
+                data.put("administratorRole", obj.get("administratorRoleID").toString());
+                data.put("moderatorRole", obj.get("moderatorRoleID").toString());
+                data.put("adminSet", obj.get("adminSetEnabled").toString());
 
                 settings.put(obj.get("guildID").toString(), data);
             }
@@ -70,10 +74,7 @@ public class Utilities {
     public void setPrefix(Guild guild, String prefix) {
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        Bson filter = new Document("prefix", getPrefix(guild));
-        Bson newPrefix = new Document("prefix", prefix);
-        Bson updatePrefix = new Document("$set", newPrefix);
-        guilds.updateOne(filter, updatePrefix);
+        guilds.find(eq("guildID", guild.getId())).first().replace("prefix", getPrefix(guild), prefix);
         db.close();
 
         HashMap<String, String> map = settings.get(guild.getId());
@@ -140,10 +141,7 @@ public class Utilities {
     public void setLocale(Guild guild, String locale) {
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        Bson filter = new Document("locale", getLocale(guild));
-        Bson newLocale = new Document("locale", locale);
-        Bson updateLocale = new Document("$set", newLocale);
-        guilds.updateOne(filter, updateLocale);
+        guilds.find(eq("guildID", guild.getId())).first().replace("locale", getLocale(guild), locale);
         db.close();
         HashMap<String, String> map = settings.get(guild.getId());
         map.put("locale", locale);
@@ -163,10 +161,7 @@ public class Utilities {
     public void setLogChannel(Guild guild, String channelID){
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        Bson filter = new Document("logChannelID", getLogChannel(guild).getId());
-        Bson newLogChannel = new Document("logChannelID", channelID);
-        Bson updateLogChannel = new Document("$set", newLogChannel);
-        guilds.updateOne(filter, updateLogChannel);
+        guilds.find(eq("guildID", guild.getId())).first().replace("logChannelID", getLogChannel(guild), channelID);
         db.close();
         HashMap<String, String> map = settings.get(guild.getId());
         map.put("logChannel", channelID);
@@ -187,26 +182,52 @@ public class Utilities {
     public void setJoinLogChannel(Guild guild, String channelID){
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        Bson filter = new Document("joinLogID", getLogChannel(guild).getId());
-        Bson newLogChannel = new Document("joinLogID", channelID);
-        Bson updateLogChannel = new Document("$set", newLogChannel);
-        guilds.updateOne(filter, updateLogChannel);
+        guilds.find(eq("guildID", guild.getId())).first().replace("joinLogID", getLogChannel(guild), channelID);
         db.close();
         HashMap<String, String> map = settings.get(guild.getId());
         map.put("joinLog", channelID);
         settings.put(guild.getId(), map);
     }
 
-    public String getSelfAvatar(GuildMessageReceivedEvent event) {
-        return event.getJDA().getSelfUser().getAvatarUrl();
+    public Role getAdministratorRole(Guild guild){
+        HashMap<String, String> map = settings.get(guild.getId());
+        return guild.getRoleById(map.get("administratorRole"));
     }
 
-    public String getSelfAvatar(MessageReceivedEvent event) {
-        return event.getJDA().getSelfUser().getAvatarUrl();
+    public void setAdministratorRole(Guild guild, String roleID){
+        db.connect();
+        MongoCollection<Document> guilds = db.getCollection("guilds");
+        guilds.find(eq("guildID", guild.getId())).first().replace("administratorRoleID", getAdministratorRole(guild), roleID);
+        db.close();
+        HashMap<String, String> map = settings.get(guild.getId());
+        map.put("administratorRole", roleID);
+        settings.put(guild.getId(), map);
     }
 
-    public String getSelfAvatar(GuildJoinEvent event) {
-        return event.getJDA().getSelfUser().getAvatarUrl();
+    public Role getModeratorRole(Guild guild){
+        HashMap<String, String> map = settings.get(guild.getId());
+        return guild.getRoleById(map.get("administratorRole"));
+    }
+
+    public void setModeratorRole(Guild guild, String roleID){
+        db.connect();
+        MongoCollection<Document> guilds = db.getCollection("guilds");
+        guilds.find(eq("guildID", guild.getId())).first().replace("moderatorRoleID", getModeratorRole(guild), roleID);
+        db.close();
+        HashMap<String, String> map = settings.get(guild.getId());
+        map.put("moderatorRole", roleID);
+        settings.put(guild.getId(), map);
+    }
+
+    public boolean isAdminEnabledForSet(Guild guild){
+        HashMap<String, String> map = settings.get(guild.getId());
+        if(map.get("adminSet").equals("true")){
+            return true;
+        } else return false;
+    }
+
+    public String getSelfAvatar(GuildMessageReceivedEvent event){
+        return event.getJDA().getSelfUser().getEffectiveAvatarUrl();
     }
 
 }
