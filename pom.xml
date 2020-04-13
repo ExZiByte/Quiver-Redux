@@ -11,7 +11,7 @@
     <name>Quiver</name>
     <developers>
         <developer>
-            <name>ExZiByte</name>
+            <name>Nathaniel "ExZiByte" Barker</name>
             <organization>NestedVariables</organization>
             <organizationUrl>https://nestedvar.dev/</organizationUrl>
             <roles>
@@ -22,6 +22,16 @@
         <developer>
             <!-- Can also be found at FirestarterMC https://firestartermc.com -->
             <name>Mykyta "TechToolbox" Komarnytsky</name>
+            <organization>NestedVariables</organization>
+            <organizationUrl>https://nestedvar.dev</organizationUrl>
+            <roles>
+                <role>Owner</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <!-- Can also be found at FirestarterMC https://firestartermc.com -->
+            <name>Gabe "Flamingo" Kotton</name>
             <organization>NestedVariables</organization>
             <organizationUrl>https://nestedvar.dev</organizationUrl>
             <roles>
@@ -101,7 +111,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.1</version>
+            <version>3.12.3</version>
         </dependency>
 
         <!-- JavaX Websocket API -->

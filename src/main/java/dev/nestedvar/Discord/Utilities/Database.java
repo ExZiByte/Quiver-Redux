@@ -16,9 +16,9 @@ public class Database {
     private static MongoDatabase db;
 
     public static void connect() {
-        MongoCredential credentials = MongoCredential.createCredential("Quiver", "admin", ConstantsConfig.get("dbpass").toCharArray());
-        client = new MongoClient(new ServerAddress("img.nestedvar.dev", 27017), credentials, options);
-        db = client.getDatabase("Quiver");
+        MongoCredential credentials = MongoCredential.createCredential("Entity", "admin", ConstantsConfig.get("dbpass").toCharArray());
+        client = new MongoClient(new ServerAddress("entity.nestedvar.dev", 42069), credentials, options);
+        db = client.getDatabase("Entity");
     }
 
     public static MongoCollection<Document> getCollection(String collection) {

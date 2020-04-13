@@ -2,6 +2,7 @@
   "name": "Quiver",
   "premiumName": "Bullseye",
   "avaiableLocales": "The current list of available locales are: \n\n```\n[locales]\n```",
+
   "permissions": {
     "insufficientPermissionsEmbedFooter": "Insufficient Permissions",
 
@@ -10,6 +11,12 @@
     "insufficientPermissionsAdmin": "You need the administrator role of this server to use this command",
     "insufficientPermissionsModerator": "You need the moderator role of this server to use this command"
   },
+
+  "ban" : {
+    "insufficientPermissions": "You do not have sufficient permissions to use the ban command on this guild"
+  },
+
+
   "settings": {
     "help": "Configure settings for the server",
     "insufficientArguments": "You need to tell me what setting you want to configure!",
@@ -52,6 +59,7 @@
     "embedFooterAdministratorRoleChangeLog": "Administrator Role Change Log",
     "embedFooterModeratorRoleChangeLog": "Moderator Role Change Log"
   },
+
   "list": {
     "help": "List options that are available for the settings command",
     "optionsInsufficientArguments": "What options did you want to list?"

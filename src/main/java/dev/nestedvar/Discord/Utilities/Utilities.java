@@ -47,8 +47,11 @@ public class Utilities {
                 data.put("prefix", obj.get("prefix").toString());
                 data.put("logChannel", obj.get("logChannelID").toString());
                 data.put("joinLog", obj.get("joinLogID").toString());
+                data.put("ownerRole", obj.get("ownerRoleID").toString());
                 data.put("administratorRole", obj.get("administratorRoleID").toString());
                 data.put("moderatorRole", obj.get("moderatorRoleID").toString());
+                data.put("helperRole", obj.get("helperRoleID").toString());
+                data.put("isPremium", obj.get("isPremium").toString());
                 data.put("adminSet", obj.get("adminSetEnabled").toString());
 
                 settings.put(obj.get("guildID").toString(), data);
@@ -71,14 +74,14 @@ public class Utilities {
     }
 
 
-    public void setPrefix(Guild guild, String prefix) {
+    public void setPrefix(Guild guild, String newPrefix) {
         db.connect();
         MongoCollection<Document> guilds = db.getCollection("guilds");
-        guilds.find(eq("guildID", guild.getId())).first().replace("prefix", getPrefix(guild), prefix);
+        guilds.find(eq("guildID", guild.getId())).first().replace("prefix", getPrefix(guild), newPrefix);
         db.close();
 
         HashMap<String, String> map = settings.get(guild.getId());
-        map.put("prefix", prefix);
+        map.put("prefix", newPrefix);
         settings.put(guild.getId(), map);
 
     }
@@ -189,6 +192,21 @@ public class Utilities {
         settings.put(guild.getId(), map);
     }
 
+    public Role getOwnerRole(Guild guild){
+        HashMap<String, String> map = settings.get(guild.getId());
+        return guild.getRoleById(map.get("ownerRole"));
+    }
+
+    public void setOwnerRole(Guild guild, String roleID){
+        db.connect();
+        MongoCollection<Document> guilds = db.getCollection("guilds");
+        guilds.find(eq("guildID", guild.getId())).first().replace("ownerRoleID", getAdministratorRole(guild), roleID);
+        db.close();
+        HashMap<String, String> map = settings.get(guild.getId());
+        map.put("ownerRole", roleID);
+        settings.put(guild.getId(), map);
+    }
+
     public Role getAdministratorRole(Guild guild){
         HashMap<String, String> map = settings.get(guild.getId());
         return guild.getRoleById(map.get("administratorRole"));
@@ -228,6 +246,12 @@ public class Utilities {
 
     public String getSelfAvatar(GuildMessageReceivedEvent event){
         return event.getJDA().getSelfUser().getEffectiveAvatarUrl();
+    }
+
+    public boolean isGuildAlreadyAvailable(Guild guild){
+        HashMap<String, String> map = settings.get(guild.getId());
+        if(map.isEmpty() || map.toString() == null) return true;
+        else return false;
     }
 
 }

@@ -30,6 +30,10 @@ public class CommandManager {
         commands.add(cmd);
     }
 
+    public List<ICommand> getCommands(){
+        return commands;
+    }
+
     @Nullable
     public ICommand getCommand(String search) {
         String searchLower = search.toLowerCase();

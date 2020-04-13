@@ -35,20 +35,20 @@ public class Set implements ICommand {
         final TextChannel logChannel = utils.getLogChannel(guild);
 
 
-        if(!member.getRoles().contains(guild.getRoleById(utils.getAdministratorRole(guild).getIdLong())) && !utils.isAdminEnabledForSet(guild)){
-
-            eb.setDescription(locale.getMessage(guild, "permissions", "insufficientPermissionsNoAdmin"));
-            eb.setColor(colors.errorRed);
-            eb.setTimestamp(Instant.now());
-            eb.setFooter(locale.getMessage(guild, "permissions", "insufficientPermissionsEmbedFooter"), utils.getSelfAvatar(ctx.getEvent()));
-
-            channel.sendMessage(eb.build()).queue((message) -> {
-                message.delete().queueAfter(15, TimeUnit.SECONDS);
-                eb.clear();
-            });
-            return;
-        }
-        if (!member.getRoles().contains(guild.getRoleById(utils.getAdministratorRole(guild).getIdLong())) || !member.isOwner()) {
+//        if(!member.getRoles().contains(guild.getRoleById(utils.getAdministratorRole(guild).getIdLong())) && !utils.isAdminEnabledForSet(guild)){
+//
+//            eb.setDescription(locale.getMessage(guild, "permissions", "insufficientPermissionsNoAdmin"));
+//            eb.setColor(colors.errorRed);
+//            eb.setTimestamp(Instant.now());
+//            eb.setFooter(locale.getMessage(guild, "permissions", "insufficientPermissionsEmbedFooter"), utils.getSelfAvatar(ctx.getEvent()));
+//
+//            channel.sendMessage(eb.build()).queue((message) -> {
+//                message.delete().queueAfter(15, TimeUnit.SECONDS);
+//                eb.clear();
+//            });
+//            return;
+//        }
+        if (!member.getRoles().contains(guild.getRoleById(utils.getOwnerRole(guild).getIdLong())) || !member.isOwner()) {
 
             eb.setDescription(locale.getMessage(guild, "permissions", "insufficientPermissionsOwnerAdmin").replace("[adminrole]", utils.getAdministratorRole(guild).getAsMention()));
             eb.setColor(colors.errorRed);
